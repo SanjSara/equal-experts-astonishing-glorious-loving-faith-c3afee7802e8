@@ -64,6 +64,20 @@ class GistHandlerTest {
         assertThat(response.body()).contains("Username is required");
     }
 
+    @ParameterizedTest
+    @ValueSource(strings = {"POST", "PUT", "DELETE"})
+    @DisplayName("returns 405 for non-GET methods")
+    void returnsMethodNotAllowed(String method) throws Exception {
+        var request = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:%d/octocat".formatted(TEST_PORT)))
+                .method(method, HttpRequest.BodyPublishers.noBody())
+                .build();
+        var response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        assertThat(response.statusCode()).isEqualTo(405);
+        assertThat(response.body()).contains("Method not allowed");
+    }
+
     @Test
     @DisplayName("returns 502 when upstream GitHub call fails")
     void returnsGatewayErrorOnUpstreamFailure() throws Exception {
