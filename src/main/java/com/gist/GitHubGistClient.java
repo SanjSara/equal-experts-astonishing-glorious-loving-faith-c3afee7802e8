@@ -10,10 +10,13 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.StreamSupport;
 
 public final class GitHubGistClient implements GistClient {
 
+    private static final Logger LOG = Logger.getLogger(GitHubGistClient.class.getName());
     private static final String GITHUB_API = "https://api.github.com/users/%s/gists";
 
     private final HttpClient httpClient;
@@ -36,9 +39,11 @@ public final class GitHubGistClient implements GistClient {
             var response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
             if (response.statusCode() == 404) {
+                LOG.info("GitHub user not found: " + username);
                 return List.of();
             }
             if (response.statusCode() != 200) {
+                LOG.warning("GitHub API returned status %d for user: %s".formatted(response.statusCode(), username));
                 throw new RuntimeException("GitHub API returned status %d".formatted(response.statusCode()));
             }
 
@@ -47,6 +52,7 @@ public final class GitHubGistClient implements GistClient {
                     .map(this::toGist)
                     .toList();
         } catch (IOException | InterruptedException e) {
+            LOG.log(Level.SEVERE, "Network error fetching gists for user: " + username, e);
             Thread.currentThread().interrupt();
             throw new RuntimeException("Failed to fetch gists for user: " + username, e);
         }

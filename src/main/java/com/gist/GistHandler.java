@@ -6,8 +6,12 @@ import com.sun.net.httpserver.HttpHandler;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public final class GistHandler implements HttpHandler {
+
+    private static final Logger LOG = Logger.getLogger(GistHandler.class.getName());
 
     private final GistClient gistClient;
     private final ObjectMapper objectMapper;
@@ -32,11 +36,14 @@ public final class GistHandler implements HttpHandler {
             return;
         }
 
+        LOG.info("Fetching gists for user: " + username);
+
         try {
             var gists = gistClient.fetchPublicGists(username);
             String json = objectMapper.writeValueAsString(gists);
             sendResponse(exchange, 200, json);
         } catch (RuntimeException e) {
+            LOG.log(Level.SEVERE, "Failed to fetch gists for user: " + username, e);
             sendResponse(exchange, 502, "{\"error\":\"Failed to fetch gists from GitHub\"}");
         }
     }
