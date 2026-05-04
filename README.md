@@ -4,48 +4,10 @@ A lightweight HTTP API that returns a user's publicly available GitHub Gists.
 
 ### Prerequisites
 
-- Java 21+
-- Docker (for container build)
+- Docker (required)
+- Java 21+ (optional, only needed to run tests locally)
 
-### Run Locally
-
-#### 1. Navigate to the project
-
-```bash
-cd ~/equal-experts-astonishing-glorious-loving-faith-c3afee7802e8
-```
-
-#### 2. Build the fat jar
-
-```bash
-./gradlew fatJar
-```
-
-#### 3. Run the server
-
-```bash
-java -jar build/libs/gist-api-1.0.0-all.jar
-```
-
-#### 4. Test it (in another terminal)
-
-```bash
-curl http://localhost:8080/octocat
-```
-
-#### 5. Stop the server
-
-Press `Ctrl+C`.
-
-### Run Tests
-
-```bash
-./gradlew test
-```
-
-### Run with Docker
-
-All Docker commands should be run from the project root directory.
+### Quick Start (Docker)
 
 #### 1. Build the image
 
@@ -63,6 +25,36 @@ docker run -p 8080:8080 gist-api
 
 ```bash
 curl http://localhost:8080/octocat
+```
+
+### Run Locally (requires Java 21)
+
+#### 1. Build the fat jar
+
+```bash
+./gradlew fatJar
+```
+
+#### 2. Run the server
+
+```bash
+java -jar build/libs/gist-api-1.0.0-all.jar
+```
+
+#### 3. Test it (in another terminal)
+
+```bash
+curl http://localhost:8080/octocat
+```
+
+#### 4. Stop the server
+
+Press `Ctrl+C`.
+
+### Run Tests
+
+```bash
+./gradlew test
 ```
 
 ### API
