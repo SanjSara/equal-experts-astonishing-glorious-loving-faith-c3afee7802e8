@@ -23,6 +23,8 @@ public final class GistHandler implements HttpHandler {
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {
+        long startTime = System.currentTimeMillis();
+
         if (!"GET".equals(exchange.getRequestMethod())) {
             sendResponse(exchange, 405, "{\"error\":\"Method not allowed\"}");
             return;
@@ -36,16 +38,19 @@ public final class GistHandler implements HttpHandler {
             return;
         }
 
-        LOG.info("Fetching gists for user: " + username);
-
         try {
             var gists = gistClient.fetchPublicGists(username);
             String json = objectMapper.writeValueAsString(gists);
             sendResponse(exchange, 200, json);
+            LOG.info("GET /%s completed in %dms [200]".formatted(username, elapsed(startTime)));
         } catch (RuntimeException e) {
-            LOG.log(Level.SEVERE, "Failed to fetch gists for user: " + username, e);
+            LOG.log(Level.SEVERE, "GET /%s failed in %dms [502]".formatted(username, elapsed(startTime)), e);
             sendResponse(exchange, 502, "{\"error\":\"Failed to fetch gists from GitHub\"}");
         }
+    }
+
+    private long elapsed(long startTime) {
+        return System.currentTimeMillis() - startTime;
     }
 
     private void sendResponse(HttpExchange exchange, int statusCode, String body) throws IOException {
