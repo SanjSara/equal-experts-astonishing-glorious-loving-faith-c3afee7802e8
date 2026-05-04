@@ -24,7 +24,7 @@ class GistHandlerTest {
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     private HttpServer server;
-    private final HttpClient client = HttpClient.newHttpClient();
+    private final HttpClient client = HttpClient.newBuilder().build();
 
     private final GistClient stubClient = username -> List.of(
             new Gist("1", "First gist", "https://gist.github.com/1", List.of("file1.txt")),
