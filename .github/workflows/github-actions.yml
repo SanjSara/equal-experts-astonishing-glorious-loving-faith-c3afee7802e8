@@ -23,5 +23,9 @@ jobs:
          java-version: '21' 
 
       - name: run unit and integration tests using gradle
-        run: ./gradlew test      
+        run: ./gradlew test 
+
+      - name : Build Docker image
+        run : docker build -t gist-api .
+         
 
