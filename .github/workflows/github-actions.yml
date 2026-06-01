@@ -1,8 +1,23 @@
 #This workflow should trigger on push events to the main/develop/master branch), push needs to get triggered for story branches
 ##main branch
+name : CI GithubActions
 
-actions/checkout@v3 
+on:
+  push:
+    branches:
+      - main
 
-actions/setup-java@v3
 
-./gradlew clean build 
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+         java-version: '21'     
+
