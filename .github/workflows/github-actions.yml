@@ -1,0 +1,8 @@
+#This workflow should trigger on push events to the main/develop/master branch), push needs to get triggered for story branches
+##main branch
+
+actions/checkout@v3 
+
+actions/setup-java@v3
+
+./gradlew clean build 
